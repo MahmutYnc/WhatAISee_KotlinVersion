@@ -1,19 +1,20 @@
 package com.example.yazlab_13
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.Manifest
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build.*
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
-import android.os.Build
 import android.net.Uri
-import android.content.ContentValues
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
+import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
     private val PERMISSION_CODE = 1000;
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        supportActionBar?.hide()
 
         //BUTTON CLICK
         img_pick_btn.setOnClickListener {
@@ -51,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         //button click
         takePhoto.setOnClickListener {
             //if system os is Marshmallow or Above, we need to request runtime permission
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (VERSION.SDK_INT >= VERSION_CODES.M){
                 if (checkSelfPermission(Manifest.permission.CAMERA)
                     == PackageManager.PERMISSION_DENIED ||
                     checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -119,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openCamera() {
         i = 1
-        val values = ContentValues()
+        var values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
         image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
@@ -128,19 +130,31 @@ class MainActivity : AppCompatActivity() {
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
         startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
 
+        imageView.buildDrawingCache()
+        val bitmap = imageView.drawingCache
+
+        val intent = Intent(this, SelectionScreen::class.java)
+        intent.putExtra("BitmapImage", bitmap)
+
+
     }
+
 
     //handle result of picked image
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
             imageView.setImageURI(data?.data)
+            startActivity(Intent(this, SelectionScreen::class.java))
+            SelectionScreen().imagedata = data?.data as Nothing?
         }
         //called when image was captured from camera intent
         if (resultCode == Activity.RESULT_OK && i == 1){
             //set image captured to image view
             imageView.setImageURI(image_uri)
+            SelectionScreen().imageuri = image_uri as Nothing?
         }
 
     }
+
 
 }

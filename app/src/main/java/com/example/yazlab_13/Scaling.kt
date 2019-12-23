@@ -13,7 +13,7 @@ class Scaling : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scaling)
-
+        supportActionBar?.hide()
 
         // Set a SeekBar change listener
         //val seekBar = findViewById<SeekBar>(R.id.seekBar)
