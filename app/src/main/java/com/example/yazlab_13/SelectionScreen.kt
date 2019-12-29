@@ -1,7 +1,6 @@
 package com.example.yazlab_13
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
@@ -12,19 +11,25 @@ import kotlinx.android.synthetic.main.activity_selection_screen.*
 class SelectionScreen : AppCompatActivity() {
 
     var imageuri: Uri? = null
-    var imagedata = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_selection_screen)
         supportActionBar?.hide()
 
+        val Picture = getIntent().getStringExtra("picture")
+        imageuri = Uri.parse(Picture)
+        imageView2.setImageURI(imageuri)
+
         //button
         val segButton = findViewById<Button>(R.id.button)
         //handle button click
         segButton.setOnClickListener {
             //start activity intent
-            startActivity(Intent(this, Segmentation::class.java))
+            val intent = Intent(this, Segmentation::class.java)
+            intent.putExtra("picture", Picture)
+            startActivity(intent)
+
         }
 
         //button2
@@ -32,11 +37,11 @@ class SelectionScreen : AppCompatActivity() {
         //handle button click
         scalingButton.setOnClickListener {
             //start activity intent
-            startActivity(Intent(this, Scaling::class.java))
-        }
-        val bitmap = intent.getParcelableExtra("BitmapImage") as Bitmap
+            val intent = Intent(this, Scaling::class.java)
+            intent.putExtra("picture", Picture)
+            startActivity(intent)
 
-        imageView2.setImageURI(imageuri)
+        }
 
     }
 

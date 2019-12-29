@@ -7,4 +7,16 @@
     tools:context=".Segmentation"
     android:background="@drawable/gradient_1">
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="360dp"
+        android:layout_height="364dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars[3]" />
 </androidx.constraintlayout.widget.ConstraintLayout>

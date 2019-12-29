@@ -9,11 +9,11 @@
 
     <SeekBar
         android:id="@+id/seekBar"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
+        android:layout_width="310dp"
+        android:layout_height="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="264dp"
+        android:layout_marginBottom="148dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
@@ -23,9 +23,10 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="100dp"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
@@ -39,5 +40,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="360dp"
+        android:layout_height="364dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.542"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars[2]" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
