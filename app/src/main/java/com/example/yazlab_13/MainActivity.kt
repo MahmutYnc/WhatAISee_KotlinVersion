@@ -10,6 +10,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,34 +30,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar?.hide()
-
-
-
-        //BUTTON CLICK
-        img_pick_btn.setOnClickListener {
-            //check runtime permission
-            if (VERSION.SDK_INT >= VERSION_CODES.M){
-                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_DENIED){
-                    //permission denied
-                    val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    //show popup to request runtime permission
-                    requestPermissions(permissions, PERMISSION_CODE)
-                }
-                else{
-                    //permission already granted
-                    pickImageFromGallery()
-                }
-            }
-            else{
-                //system OS is < Marshmallow
-                pickImageFromGallery()
-            }
-
-
-
-
-        }
 
         //button click
         takePhoto.setOnClickListener {
@@ -81,15 +54,28 @@ class MainActivity : AppCompatActivity() {
                 openCamera()
             }
         }
-        /*
+
         //button
-        val mStartActBtn = findViewById<Button>(R.id.next)
+        val segButton = findViewById<Button>(R.id.button3)
         //handle button click
-        mStartActBtn.setOnClickListener {
+        segButton.setOnClickListener {
             //start activity intent
-            startActivity(Intent(this@MainActivity, SelectionScreen::class.java))
+            val intent = Intent(this, Segmentation::class.java)
+            //intent.putExtra("picture", Picture)
+            startActivity(intent)
+
         }
-        */
+
+        //button2
+        val scalingButton = findViewById<Button>(R.id.button4)
+        //handle button click
+        scalingButton.setOnClickListener {
+            //start activity intent
+            val intent = Intent(this, Scaling::class.java)
+            //intent.putExtra("picture", Picture)
+            startActivity(intent)
+
+        }
     }
 
     private fun pickImageFromGallery() {
@@ -114,7 +100,8 @@ class MainActivity : AppCompatActivity() {
                 if (grantResults.size >0 && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED){
                     //permission from popup granted
-                    pickImageFromGallery()
+                    //pickImageFromGallery()
+
                     //permission from popup was granted
                     openCamera()
                 }
@@ -145,39 +132,42 @@ class MainActivity : AppCompatActivity() {
 
     //handle result of picked image
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
-            imageView.setImageURI(data?.data)
+        super.onActivityResult(requestCode, resultCode, data)
 
 
-            val selectedImage = data?.data
-            val filepath = arrayOf(MediaStore.Images.Media.DATA)
-            val cursor = contentResolver.query(selectedImage,filepath,null,null,null)
-            cursor.moveToFirst()
-            val Index = cursor.getColumnIndex(filepath[0])
-            Picture = cursor.getString(Index)
-            cursor.close()
-
-            val intent2 = Intent(this, SelectionScreen::class.java)
-            intent2.putExtra("picture", Picture)
-            startActivity(intent2)
-
-        }
+//        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
+//            imageView.setImageURI(data?.data)
+//
+//
+//            val selectedImage = data?.data
+//            val filepath = arrayOf(MediaStore.Images.Media.DATA)
+//            val cursor = contentResolver.query(selectedImage,filepath,null,null,null)
+//            cursor.moveToFirst()
+//            val Index = cursor.getColumnIndex(filepath[0])
+//            Picture = cursor.getString(Index)
+//            cursor.close()
+//
+//            val intent2 = Intent(this, SelectionScreen::class.java)
+//            intent2.putExtra("picture", Picture)
+//            startActivity(intent2)
+//
+//        }
         //called when image was captured from camera intent
         if (resultCode == Activity.RESULT_OK && i == 1){
             //set image captured to image view
             imageView.setImageURI(image_uri)
 
-            val selectedImage = image_uri
-            val filepath = arrayOf(MediaStore.Images.Media.DATA)
-            val cursor = contentResolver.query(selectedImage,filepath,null,null,null)
-            cursor.moveToFirst()
-            val Index = cursor.getColumnIndex(filepath[0])
-            val Picture = cursor.getString(Index)
-            cursor.close()
-
-            val intent2 = Intent(this, SelectionScreen::class.java)
-            intent2.putExtra("picture", Picture)
-            startActivity(intent2)
+//            val selectedImage = image_uri
+//            val filepath = arrayOf(MediaStore.Images.Media.DATA)
+//            val cursor = contentResolver.query(selectedImage,filepath,null,null,null)
+//            cursor.moveToFirst()
+//            val Index = cursor.getColumnIndex(filepath[0])
+//            val Picture = cursor.getString(Index)
+//            cursor.close()
+//
+////            val intent2 = Intent(this, SelectionScreen::class.java)
+////            intent2.putExtra("picture", Picture)
+////            startActivity(intent2)
         }
 
     }

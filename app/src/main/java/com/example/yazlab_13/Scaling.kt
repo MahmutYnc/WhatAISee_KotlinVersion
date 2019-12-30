@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.squareup.picasso.Picasso
 import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_scaling.*
 
@@ -33,9 +34,9 @@ class Scaling : AppCompatActivity() {
         setContentView(R.layout.activity_scaling)
         supportActionBar?.hide()
 
-        val Picture = getIntent().getStringExtra("picture")
-        imageuri = Uri.parse(Picture)
-        imageView3.setImageURI(imageuri)
+//        val Picture = getIntent().getStringExtra("picture")
+//        imageuri = Uri.parse(Picture)
+//        imageView3.setImageURI(imageuri)
 
         //init
         alertDialog = SpotsDialog.Builder().setContext(this).build()
@@ -66,13 +67,18 @@ class Scaling : AppCompatActivity() {
             }
         })
 
-        button3.setOnClickListener({
+        uploadButton.setOnClickListener {
+
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent,"Select Picture"), IMAGE_PICK_CODE)
-        })
 
+
+
+
+
+        }
 
 
     }
@@ -81,6 +87,12 @@ class Scaling : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IMAGE_PICK_CODE){
             alertDialog.show()
+            println(imageuri)
+            println(imageuri)
+            println(imageuri)
+            println(imageuri)
+
+            //data!!.data = imageuri;
             val uploadTask = storageReference!!.putFile(data!!.data!!)
             val task = uploadTask.continueWithTask{
                 task ->
@@ -91,9 +103,10 @@ class Scaling : AppCompatActivity() {
             }.addOnCompleteListener{ task ->
                 if (task.isSuccessful){
                     val downloadUri = task.result
-                    val url = downloadUri!!.toString()
+                    val url = downloadUri!!.toString().substring(0, downloadUri.toString().indexOf("&token"))
                     Log.d("DIRECTLINK", url)
                     alertDialog.dismiss()
+                    Picasso.get().load(url).into(imageView3)
                 }
 
 
