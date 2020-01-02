@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
     var i = 0
     var Picture = "";
 
@@ -77,6 +78,11 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
+
+
+
+
 
     private fun pickImageFromGallery() {
         i=0
@@ -171,6 +177,9 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+
+
 
 
 }
