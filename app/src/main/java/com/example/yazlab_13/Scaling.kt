@@ -8,24 +8,27 @@ import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.signature.ObjectKey
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.squareup.picasso.Picasso
 import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_scaling.*
+
 
 class Scaling : AppCompatActivity() {
 
     var imageuri: Uri? = null
-    var abc = 0;
-
+    var abc = 100;
+    var url = "";
     private var mStorageRef: StorageReference? = null
 
     lateinit var storageReference: StorageReference
     lateinit var alertDialog: AlertDialog
 
-    companion object{
-         private val IMAGE_PICK_CODE = 1000;
+    companion object {
+        private val IMAGE_PICK_CODE = 1000;
     };
 
 
@@ -63,21 +66,29 @@ class Scaling : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 // Do something
                 //Toast.makeText(applicationContext,"stop tracking",Toast.LENGTH_SHORT).show()
+                if(abc <= 30){
+                    abc = 25
+                }
+                else if (abc>30 && abc <= 55){
+                    abc = 50
+                }
+                else if (abc>55 && abc <= 80){
+                    abc = 75
+                }
+                else if (abc > 80){
+                    abc = 100
+                }
 
             }
         })
 
         uploadButton.setOnClickListener {
             imageView3.setImageDrawable(null)
+            url = "";
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(Intent.createChooser(intent,"Select Picture"), IMAGE_PICK_CODE)
-
-
-
-
-
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_PICK_CODE)
         }
 
 
@@ -85,35 +96,55 @@ class Scaling : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IMAGE_PICK_CODE){
+        url = ""
+        //Thread(Runnable { Glide.get(this@Scaling).clearDiskCache() }).start()
+        imageView3.setImageDrawable(null)
+        if (requestCode == IMAGE_PICK_CODE) {
+
             alertDialog.show()
             println(imageuri)
             println(imageuri)
             println(imageuri)
             println(imageuri)
 
+
             //data!!.data = imageuri;
             val uploadTask = storageReference!!.putFile(data!!.data!!)
-            val task = uploadTask.continueWithTask{
-                task ->
-                if(!task.isSuccessful){
-                    Toast.makeText(this,"failed to upload",Toast.LENGTH_SHORT).show()
+            val task = uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    Toast.makeText(this, "failed to upload", Toast.LENGTH_SHORT).show()
                 }
                 storageReference!!.downloadUrl
-            }.addOnCompleteListener{ task ->
-                if (task.isSuccessful){
+            }.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
                     val downloadUri = task.result
-                    val url = downloadUri!!.toString().substring(0, downloadUri.toString().indexOf("&token"))
+                    Log.d("download", downloadUri.toString())
+                    url = downloadUri!!.toString().substring(
+                        0,
+                        downloadUri.toString().indexOf("upload")
+                    ) + "little-upload"+""+"?alt=media"
                     Log.d("DIRECTLINK", url)
                     alertDialog.dismiss()
-                    Picasso.get().load(url).into(imageView3)
+                    Toast.makeText(this, url, Toast.LENGTH_SHORT).show()
+                    val randomValue =Math.random()
+
+                    Glide.with(this)
+                        .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .fitCenter()
+                        .signature(ObjectKey(randomValue))
+                        .into(imageView3);
                 }
-
-
             }
         }
     }
 
 
+
 }
+
+
+
 

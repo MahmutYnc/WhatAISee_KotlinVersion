@@ -7,39 +7,53 @@ const os = require('os');
 const fs = require('fs');
 
 
-exports.onFileChange = functions.storage.object().onFinalize(event => {
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-    const object = event.data;
-    const bucket = object.bucket;
-    const contentType = object.contentType;
-    const filePath = object.name;
-    console.log('File change detected, function execution started');
-
-    if (object.resourceState === 'not_exists') {
-        console.log('We deleted a file, exit...');
-        return;
-    }
-
+// [START generateThumbnailTrigger]
+exports.generateThumbnail = functions.runWith({ memory: "2GB", timeoutSeconds: 60 }).region('europe-west2').storage.object().onFinalize(async (object) => {
+    // [END generateThumbnailTrigger]
+    // [START eventAttributes]
     
+    const fileBucket = object.bucket; // The Storage bucket that contains the file.
+    const filePath = object.name; // File path in the bucket.
+    const contentType = object.contentType; // File content type.
+    const metageneration = object.metageneration; // Number of times metadata has been generated. New objects have a value of 1.
+    // [END eventAttributes]
 
-    if (path.basename(filePath).startsWith('resized-')) {
-        console.log('We already renamed that file!');
-        return;
+    // [START stopConditions]
+    // Exit if this is triggered on a file that is not an image.
+    if (!contentType.startsWith('image/')) {
+        return console.log('This is not an image.');
     }
 
-    const destBucket = gcs.bucket(bucket);
-    const tmpFilePath = path.join(os.tmpdir(), path.basename(filePath));
-    const metadata = { contentType: contentType };
-    return destBucket.file(filePath).download({
-        destination: tmpFilePath
-    }).then(() => {
-        return spawn('convert', [tmpFilePath, '-resize', '500x500', tmpFilePath]);
-    }).then(() => {
-        return destBucket.upload(tmpFilePath, {
-            destination: 'resized-' + path.basename(filePath),
-            metadata: metadata
-        })
+    // Get the file name.
+    const fileName = path.basename(filePath);
+    // Exit if the image is already a thumbnail.
+    if (fileName.startsWith('little')) {
+        return console.log('Already a Thumbnail.');
+    }
+    // [END stopConditions]
+
+    // [START thumbnailGeneration]
+    // Download file from bucket.
+    const bucket = admin.storage().bucket(fileBucket);
+    const tempFilePath = path.join(os.tmpdir(), fileName);
+    const metadata = {
+        contentType: contentType,
+    };
+    await bucket.file(filePath).download({ destination: tempFilePath });
+    console.log('Image downloaded locally to', tempFilePath);
+    // Generate a thumbnail using ImageMagick.
+    await spawn('convert', [tempFilePath, '-thumbnail', '500x500>', tempFilePath]);
+    console.log('Thumbnail created at', tempFilePath);
+    // We add a 'thumb_' prefix to thumbnails file name. That's where we'll upload the thumbnail.
+    const thumbFileName = `little-${fileName}`;
+    const thumbFilePath = path.join(path.dirname(filePath), thumbFileName);
+    // Uploading the thumbnail.
+    await bucket.upload(tempFilePath, {
+        destination: thumbFilePath,
+        metadata: metadata,
     });
+    // Once the thumbnail has been uploaded delete the local file to free up disk space.
+    return fs.unlinkSync(tempFilePath);
+    // [END thumbnailGeneration]
 });
+// [END generateThumbnail]

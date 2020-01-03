@@ -52,6 +52,6 @@
         app:layout_constraintHorizontal_bias="0.542"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars[2]" />
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
