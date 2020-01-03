@@ -17,8 +17,10 @@
     "child-process-promise": "^2.2.1",
     "firebase-admin": "^8.6.0",
     "firebase-functions": "^3.3.0",
+    "fs-extra": "^8.1.0",
     "request": "^2.x",
-    "request-promise": "^1.x"
+    "request-promise": "^1.x",
+    "sharp": "^0.23.4"
   },
   "devDependencies": {
     "eslint": "^5.12.0",

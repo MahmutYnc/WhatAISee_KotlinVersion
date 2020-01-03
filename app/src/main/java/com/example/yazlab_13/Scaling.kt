@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_scaling.*
 class Scaling : AppCompatActivity() {
 
     var imageuri: Uri? = null
-    var abc = 100;
+    var abc = 1920;
     var url = "";
     private var mStorageRef: StorageReference? = null
 
@@ -67,16 +67,16 @@ class Scaling : AppCompatActivity() {
                 // Do something
                 //Toast.makeText(applicationContext,"stop tracking",Toast.LENGTH_SHORT).show()
                 if(abc <= 30){
-                    abc = 25
+                    abc = 100
                 }
                 else if (abc>30 && abc <= 55){
-                    abc = 50
+                    abc = 400
                 }
                 else if (abc>55 && abc <= 80){
-                    abc = 75
+                    abc = 720
                 }
                 else if (abc > 80){
-                    abc = 100
+                    abc = 1920
                 }
 
             }
@@ -123,7 +123,7 @@ class Scaling : AppCompatActivity() {
                     url = downloadUri!!.toString().substring(
                         0,
                         downloadUri.toString().indexOf("upload")
-                    ) + "little-upload"+""+"?alt=media"
+                    ) + "upload@s_"+abc+"?alt=media"
                     Log.d("DIRECTLINK", url)
                     alertDialog.dismiss()
                     Toast.makeText(this, url, Toast.LENGTH_SHORT).show()
