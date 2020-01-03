@@ -68,7 +68,7 @@ class Scaling : AppCompatActivity() {
         })
 
         uploadButton.setOnClickListener {
-
+            imageView3.setImageDrawable(null)
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
